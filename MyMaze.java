@@ -2,13 +2,17 @@
 // x500s:casas034, rao0004
 import java.util.Scanner;
 import java.util.Random;
+import java.lang.Math;
 
 public class MyMaze{
     Cell[][] maze;
+    //Cell[][] mazeCopy;
     int startRow;
     int endRow;
     int totalRow;
     int totalCol;
+    double startEndDist;
+
 
     public MyMaze(int rows, int cols, int startRow, int endRow) {
         this.startRow = startRow;
@@ -22,6 +26,16 @@ public class MyMaze{
                 maze[i][j] = new Cell();
             }
         }
+
+        double entranceRow = (double)startRow + .5;
+        double exitRow = (double)endRow + .5;
+        startEndDist = Math.sqrt(( Math.abs((exitRow - entranceRow) * (exitRow - entranceRow)) + (totalCol * totalCol)));
+
+    }
+
+    //copy constructor
+    public MyMaze(MyMaze other){
+        this.maze = other.maze;
     }
 
     /* TODO: Create a new maze using the algorithm found in the writeup. */
@@ -40,8 +54,8 @@ public class MyMaze{
             endRow = ranObj.nextInt(totalRow);
         }
         else if(level == 2){
-            totalRow = 5;
-            totalCol = 20;
+            totalRow = 7;
+            totalCol = 7;
             startRow = ranObj.nextInt(totalRow);
             endRow = ranObj.nextInt(totalRow);
         }
@@ -130,7 +144,7 @@ public class MyMaze{
                 generated.maze[i][j].setVisited(false);
             }
         }
-
+        
         return generated;
     }
 
@@ -256,6 +270,62 @@ public class MyMaze{
         printMaze();
     }
 
+    public void Astar() {
+
+
+        //Q1Gen<int[]> queue = new Q1Gen<int[]>();
+        //queue.add(new int[]{startRow,0});
+        // Stack1Gen<int[]> stack = new Stack1Gen<int[]>();
+        // stack.push(new int[]{startRow,0});
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>();
+        pq.add(new int[]{startRow,0},1);
+
+
+
+        //System.out.println(startEndDist);
+
+        while(!pq.isEmpty()){
+
+            int[] coord = pq.next();
+            maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
+
+            if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
+                break;
+            }
+
+            if (coord[0] + 1 < maze.length && !maze[coord[0] + 1][coord[1]].getVisited() && !maze[coord[0]][coord[1]].getBottom()){//go down
+                pq.add(new int[] {coord[0] + 1, coord[1]},EuclideanEval(new int[] {coord[0] + 1, coord[1]}));
+            }
+
+            if (coord[0] - 1 >= 0  && !maze[coord[0] - 1][coord[1]].getVisited() && !maze[coord[0] -1][coord[1]].getBottom()){//go up
+                pq.add(new int[] {coord[0] - 1, coord[1]}, EuclideanEval(new int[] {coord[0] - 1, coord[1]}));
+            }
+
+            if (coord[1] + 1 < maze[0].length && !maze[coord[0]][coord[1] + 1].getVisited() && !maze[coord[0]][coord[1]].getRight()){//go right
+                pq.add(new int[] {coord[0], coord[1] + 1},EuclideanEval(new int[] {coord[0], coord[1] + 1}));
+            }
+
+            if (coord[1] - 1 >= 0 && !maze[coord[0]][coord[1] -1].getVisited() && !maze[coord[0]][coord[1] - 1].getRight()){//go left
+                pq.add(new int[] {coord[0], coord[1] - 1},EuclideanEval(new int[] {coord[0], coord[1]-1}));
+            }
+        }
+
+        printMaze();
+    }
+
+    public int EuclideanEval(int[] coords){
+
+        double startRow = (double)coords[0] + .5;
+        double startCol = (double)coords[1] - .5;
+
+        double exitRow = (double)endRow + .5;
+        double exitCol = (double)totalCol - .5;
+
+        double dist = Math.sqrt(( Math.abs((startRow - exitRow) * (startRow - exitRow)) + Math.abs((startCol - exitCol) * (startCol - exitCol))));
+        double heuristic = startEndDist - dist;
+        //System.out.println("heurstic: " + heuristic + " move: " + startRow + ", " + startCol);
+        return (int)heuristic;
+    }
 
     public static void main(String[] args){
         /* Use scanner to get user input for maze level, then make and solve maze /
@@ -264,11 +334,41 @@ public class MyMaze{
         Scanner s = new Scanner(System.in);
         int lvl = s.nextInt();
         MyMaze maze = makeMaze(lvl);
+        MyMaze mazeCopy = new MyMaze(maze);
+
+        System.out.println("Enter a search strategy: Number: 1 BFS, 2 DFS, 3 A*");
+        int strat = s.nextInt();
+
         maze.printMaze();
         System.out.println("The Solved Maze is below");
+
+        System.out.println("DFS solved");
+        maze.dfs();
+        System.out.println("Astar");
+        mazeCopy.Astar();
+        if(maze == mazeCopy){
+            System.out.println("yas");
+        }
+        if(maze.equals(mazeCopy)){
+            System.out.println("yas22");
+        }
+        // if(strat == 1){
+        //     maze.bfs();
+        // }else if(strat == 2){
+        //     long startTime = System.currentTimeMillis();
+        //     maze.dfs();
+        //     long endTime = System.currentTimeMillis();
+        //     System.out.println("Total execution time: " + (endTime - startTime));
+        // }else if(strat == 3){
+        //     long startTime = System.currentTimeMillis();
+        //     maze.Astar();
+        //     long endTime = System.currentTimeMillis();
+        //     System.out.println("Astar Total execution time: " + (endTime - startTime));
+        // }else{
+        //     System.out.println("BRUH");
+        // }
         //maze.solveMaze();
-        maze.bfs();
-        
+                
     }
 
 }

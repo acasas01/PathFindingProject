@@ -233,4 +233,18 @@ public class PriorityQueue <E> implements Iterator<E>, Serializable, Cloneable {
     }
     grow(legalCapacity);
   }
+  public static void main(String[] args) {
+    PriorityQueue<String> pq = new PriorityQueue<String>();
+    pq.add("one",1);
+    pq.add("three",1);
+    pq.add("one",1);
+    pq.add("two",1);
+    System.out.println(pq);
+    String out = pq.next();
+    System.out.println(out);
+    System.out.println(pq);
+    pq.next();
+    System.out.println(pq);
+  }
+
 }
