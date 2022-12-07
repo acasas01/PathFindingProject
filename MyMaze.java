@@ -61,7 +61,7 @@ public class MyMaze{
 
         int ranDirection;
 
-        while(!stack.isEmpty()) {//getting a random neighbor
+        while(!stack.isEmpty()) { //getting a random neighbor
             ranObj = new Random();
             int row = stack.top()[0];
             int col = stack.top()[1];
@@ -187,7 +187,7 @@ public class MyMaze{
 
     }
     /* TODO: Solve the maze using the algorithm found in the writeup. */
-    public void solveMaze() {
+    public void bfs() {
 
         Q1Gen<int[]> queue = new Q1Gen<int[]>();
         queue.add(new int[]{startRow,0});
@@ -221,16 +221,53 @@ public class MyMaze{
         printMaze();
     }
 
+    public void dfs() {
+
+        //Q1Gen<int[]> queue = new Q1Gen<int[]>();
+        //queue.add(new int[]{startRow,0});
+        Stack1Gen<int[]> stack = new Stack1Gen<int[]>();
+        stack.push(new int[]{startRow,0});
+        while(!stack.isEmpty()){
+
+            int[] coord = stack.pop();
+            maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
+
+            if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
+                break;
+            }
+
+            if (coord[0] + 1 < maze.length && !maze[coord[0] + 1][coord[1]].getVisited() && !maze[coord[0]][coord[1]].getBottom()){//go down
+                stack.push(new int[] {coord[0] + 1, coord[1]});
+            }
+
+            if (coord[0] - 1 >= 0  && !maze[coord[0] - 1][coord[1]].getVisited() && !maze[coord[0] -1][coord[1]].getBottom()){//go up
+                stack.push(new int[] {coord[0] - 1, coord[1]});
+            }
+
+            if (coord[1] + 1 < maze[0].length && !maze[coord[0]][coord[1] + 1].getVisited() && !maze[coord[0]][coord[1]].getRight()){//go right
+                stack.push(new int[] {coord[0], coord[1] + 1});
+            }
+
+            if (coord[1] - 1 >= 0 && !maze[coord[0]][coord[1] -1].getVisited() && !maze[coord[0]][coord[1] - 1].getRight()){//go left
+                stack.push(new int[] {coord[0], coord[1] - 1});
+            }
+        }
+
+        printMaze();
+    }
+
+
     public static void main(String[] args){
         /* Use scanner to get user input for maze level, then make and solve maze /
                  */
-        System.out.println("Enter Level Number: 1 (5x5), 2 (5x20), or 3 (20x20) ");
+        System.out.println("Enter Level Number: 1 (5x5), 2 (5x20), or 3 (20x20) @");
         Scanner s = new Scanner(System.in);
         int lvl = s.nextInt();
         MyMaze maze = makeMaze(lvl);
         maze.printMaze();
         System.out.println("The Solved Maze is below");
-        maze.solveMaze();
+        //maze.solveMaze();
+        maze.bfs();
         
     }
 
