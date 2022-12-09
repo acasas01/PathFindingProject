@@ -68,8 +68,8 @@ public class MyMaze{
             endRow = ranObj.nextInt(totalRow);
         }
         else{//level 3
-            totalRow = 200;
-            totalCol = 200;
+            totalRow = 50;
+            totalCol = 50;
             startRow = ranObj.nextInt(totalRow);
             endRow = ranObj.nextInt(totalRow);
         }
@@ -296,7 +296,7 @@ public class MyMaze{
         printMaze();
     }
 
-    public void Astar() {
+    public void AstarEuc( ) {
 
 
         //Q1Gen<int[]> queue = new Q1Gen<int[]>();
@@ -340,6 +340,50 @@ public class MyMaze{
         printMaze();
     }
 
+    public void AstarSumEdge( ) {
+
+
+        //Q1Gen<int[]> queue = new Q1Gen<int[]>();
+        //queue.add(new int[]{startRow,0});
+        // Stack1Gen<int[]> stack = new Stack1Gen<int[]>();
+        // stack.push(new int[]{startRow,0});
+
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>();
+        pq.add(new int[]{startRow,0},1);
+
+
+
+        //System.out.println(startEndDist);
+
+        while(!pq.isEmpty()){
+
+            int[] coord = pq.next();
+            maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
+
+            if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
+                break;
+            }
+
+            if (coord[0] + 1 < maze.length && !maze[coord[0] + 1][coord[1]].getVisited() && !maze[coord[0]][coord[1]].getBottom()){//go down
+                pq.add(new int[] {coord[0] + 1, coord[1]},SumEdgeDist(new int[] {coord[0] + 1, coord[1]}));
+            }
+
+            if (coord[0] - 1 >= 0  && !maze[coord[0] - 1][coord[1]].getVisited() && !maze[coord[0] -1][coord[1]].getBottom()){//go up
+                pq.add(new int[] {coord[0] - 1, coord[1]}, SumEdgeDist(new int[] {coord[0] - 1, coord[1]}));
+            }
+
+            if (coord[1] + 1 < maze[0].length && !maze[coord[0]][coord[1] + 1].getVisited() && !maze[coord[0]][coord[1]].getRight()){//go right
+                pq.add(new int[] {coord[0], coord[1] + 1},SumEdgeDist(new int[] {coord[0], coord[1] + 1}));
+            }
+
+            if (coord[1] - 1 >= 0 && !maze[coord[0]][coord[1] -1].getVisited() && !maze[coord[0]][coord[1] - 1].getRight()){//go left
+                pq.add(new int[] {coord[0], coord[1] - 1},SumEdgeDist(new int[] {coord[0], coord[1]-1}));
+            }
+        }
+
+        printMaze();
+    }
+
     public int EuclideanEval(int[] coords){
 
         double startRow = (double)coords[0] + .5;
@@ -352,6 +396,21 @@ public class MyMaze{
         double heuristic = startEndDist - dist;
         //System.out.println("heurstic: " + heuristic + " move: " + startRow + ", " + startCol);
         return (int)heuristic;
+    }
+
+    public int SumEdgeDist(int[] coords){
+
+        double startRow = (double)coords[0] + .5;
+        double startCol = (double)coords[1] - .5;
+
+        
+        double exitRow = (double)endRow + .5;
+        double exitCol = (double)totalCol - .5;
+
+        int heuristic =(int) (startEndDist - (Math.abs(startRow - exitRow) + Math.abs(startCol - exitCol)));
+
+
+        return heuristic;
     }
 
     public static void main(String[] args){
@@ -372,16 +431,16 @@ public class MyMaze{
 
         maze.printMaze();
 
-        System.out.println("DFS:");
+        System.out.println("Cheb:");
         long startTime = System.currentTimeMillis();
-        maze.dfs();
+        maze.AstarSumEdge();
         long endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime));
 
 
-        System.out.println("Astar");
+        System.out.println("Euc");
         startTime = System.currentTimeMillis();
-        mazeCopy.Astar();
+        mazeCopy.AstarEuc();
         endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime));
 
