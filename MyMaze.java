@@ -296,7 +296,7 @@ public class MyMaze{
 
             int[] coord = queue.remove();
             maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
-
+            counter++;
             if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
                 break;
             }
@@ -318,7 +318,7 @@ public class MyMaze{
             }
         }
 
-        printMaze();
+        //printMaze();
     }
 
     public void dfs() {
@@ -331,7 +331,7 @@ public class MyMaze{
 
             int[] coord = stack.pop();
             maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
-
+            counter++;
             if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
                 break;
             }
@@ -353,7 +353,7 @@ public class MyMaze{
             }
         }
 
-        printMaze();
+        //printMaze();
     }
 
     public void AstarEuc( ) {
@@ -375,7 +375,7 @@ public class MyMaze{
 
             int[] coord = pq.next();
             maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
-
+            counter++;
             if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
                 break;
             }
@@ -397,7 +397,7 @@ public class MyMaze{
             }
         }
 
-        printMaze();
+        //printMaze();
     }
 
     public void AstarSumEdge( ) {
@@ -419,7 +419,7 @@ public class MyMaze{
 
             int[] coord = pq.next();
             maze[coord[0]][coord[1]].setVisited(true);//current cell as visited
-
+            counter++;
             if(coord[0] == endRow && coord[1] == maze[0].length-1){ //reached end point case
                 break;
             }
@@ -441,7 +441,7 @@ public class MyMaze{
             }
         }
 
-        printMaze();
+        //printMaze();
     }
 
     public int EuclideanEval(int[] coords){
@@ -485,76 +485,42 @@ public class MyMaze{
         //int strat = s.nextInt();
 
         long t1,t2,t3,t4;
-        MyMaze maze = makeMaze(500);
+        MyMaze maze = makeMaze(1000);
         MyMaze mazeCopy = new MyMaze(maze,1);
         MyMaze mazeCopy2 = new MyMaze(maze,2);
         MyMaze mazeCopy3 = new MyMaze(maze,3);
 
 
 
-        maze.printMaze();
-
-        maze.dfs();
-
-        mazeCopy.printMaze();
-
-        mazeCopy2.printMaze();
-
-        mazeCopy3.printMaze();
-
-
-
         
-        System.out.println("Cheb:");
         long startTime = System.currentTimeMillis();
         maze.AstarSumEdge();
         long endTime = System.currentTimeMillis();
         t1 = endTime - startTime;
-        System.out.println("Total execution time: " + (t1));
 
 
-        System.out.println("Euc");
         startTime = System.currentTimeMillis();
         mazeCopy.AstarEuc();
         endTime = System.currentTimeMillis();
         t2 = endTime - startTime;
-        System.out.println("Total execution time: " + (t2));
 
         startTime = System.currentTimeMillis();
         mazeCopy2.bfs();
         endTime = System.currentTimeMillis();
         t3 = endTime - startTime;
-        System.out.println("Total execution time: " + (t3));
 
         startTime = System.currentTimeMillis();
         mazeCopy3.dfs();
         endTime = System.currentTimeMillis();
         t4 = endTime - startTime;
-        System.out.println("Total execution time: " + (t4));
         
 
-        System.out.println("Euc: " + t2 + "ms count: " + maze.counter);
+        System.out.println("Euc: " + t2 + " ms count: " + maze.counter);
         System.out.println("Cheb: " + t1 + "ms count: " + mazeCopy.counter);
         
-        System.out.println("bfs: " + t3 + "ms count: " + mazeCopy2.counter);
-        System.out.println("dfs: " + t4 + "ms count: " + mazeCopy3.counter);
+        System.out.println("bfs: " + t3 + " ms count: " + mazeCopy2.counter);
+        System.out.println("dfs: " + t4 + " ms count: " + mazeCopy3.counter);
 
-        // if(strat == 1){
-        //     maze.bfs();
-        // }else if(strat == 2){
-        //     long startTime = System.currentTimeMillis();
-        //     maze.dfs();
-        //     long endTime = System.currentTimeMillis();
-        //     System.out.println("Total execution time: " + (endTime - startTime));
-        // }else if(strat == 3){
-        //     long startTime = System.currentTimeMillis();
-        //     maze.Astar();
-        //     long endTime = System.currentTimeMillis();
-        //     System.out.println("Astar Total execution time: " + (endTime - startTime));
-        // }else{
-        //     System.out.println("BRUH");
-        // }
-        //maze.solveMaze();
                 
     }
 
