@@ -12,8 +12,11 @@ public class MyMaze{
     int totalRow;
     int totalCol;
     double startEndDist;
-    Cell[][] mazeCopy;
     int counter = 0; 
+    Cell[][] mazeCopy;
+    Cell[][] mazeCopy1;
+    Cell[][] mazeCopy2;
+
 
 
     public MyMaze(int rows, int cols, int startRow, int endRow) {
@@ -23,11 +26,17 @@ public class MyMaze{
         totalCol = cols;
         maze = new Cell[rows][cols];
         mazeCopy = new Cell[rows][cols];
+        mazeCopy1 = new Cell[rows][cols];
+        mazeCopy2 = new Cell[rows][cols];
+
 
         for (int i =0; i < maze.length; i++) {
             for (int j = 0; j < maze[0].length; j++) {
                 maze[i][j] = new Cell();
                 mazeCopy[i][j] = new Cell();
+                mazeCopy1[i][j] = new Cell();
+                mazeCopy2[i][j] = new Cell();
+
             }
         }
 
@@ -38,8 +47,17 @@ public class MyMaze{
     }
 
     //copy constructor
-    public MyMaze(MyMaze other){
-        this.maze = other.mazeCopy;
+    public MyMaze(MyMaze other, int which){
+
+        if(which == 1){
+            this.maze = other.mazeCopy;
+
+        }else if(which == 2){
+            this.maze = other.mazeCopy1;
+        }else if(which == 3){
+            this.maze = other.mazeCopy2;
+        }
+
         this.startRow = other.startRow;
         this.endRow = other.endRow;
         this.totalCol = other.totalCol;
@@ -82,6 +100,9 @@ public class MyMaze{
         stack.push(start);
         generated.maze[startRow][0].setVisited(true);
         generated.mazeCopy[startRow][0].setVisited(true);
+        generated.mazeCopy1[startRow][0].setVisited(true);
+        generated.mazeCopy2[startRow][0].setVisited(true);
+
 
         int ranDirection;
 
@@ -92,6 +113,9 @@ public class MyMaze{
             if (row == endRow && col == totalCol-1) { //end cell
                 generated.maze[row][col].setRight(false);
                 generated.mazeCopy[row][col].setRight(false);
+                generated.mazeCopy1[row][col].setRight(false);
+                generated.mazeCopy2[row][col].setRight(false);
+
             }
 
             int[] possible = new int[4];//possible directions
@@ -144,6 +168,13 @@ public class MyMaze{
 
                 generated.mazeCopy[row][col].setBottom(false);
                 generated.mazeCopy[row + 1][col].setVisited(true);
+
+                generated.mazeCopy1[row][col].setBottom(false);
+                generated.mazeCopy1[row + 1][col].setVisited(true);
+
+                generated.mazeCopy2[row][col].setBottom(false);
+                generated.mazeCopy2[row + 1][col].setVisited(true);
+
             }
             else if (ranDirection == 2) {//if direction is up and cell above exists and isn't visited
                 stack.push(new int[]{row - 1, col});
@@ -152,6 +183,13 @@ public class MyMaze{
 
                 generated.mazeCopy[row - 1][col].setBottom(false);
                 generated.mazeCopy[row - 1][col].setVisited(true);
+
+                
+                generated.mazeCopy1[row - 1][col].setBottom(false);
+                generated.mazeCopy1[row - 1][col].setVisited(true);
+                
+                generated.mazeCopy2[row - 1][col].setBottom(false);
+                generated.mazeCopy2[row - 1][col].setVisited(true);
             }
             else if (ranDirection == 3) {//going left
                 stack.push(new int[]{row, col-1});
@@ -160,6 +198,12 @@ public class MyMaze{
 
                 generated.mazeCopy[row][col - 1].setRight(false);
                 generated.mazeCopy[row][col - 1].setVisited(true);
+
+                generated.mazeCopy1[row][col - 1].setRight(false);
+                generated.mazeCopy1[row][col - 1].setVisited(true);
+
+                generated.mazeCopy2[row][col - 1].setRight(false);
+                generated.mazeCopy2[row][col - 1].setVisited(true);
             }
         }
 
@@ -168,6 +212,9 @@ public class MyMaze{
                 generated.maze[i][j].setVisited(false);
 
                 generated.mazeCopy[i][j].setVisited(false);
+                generated.mazeCopy1[i][j].setVisited(false);
+                generated.mazeCopy2[i][j].setVisited(false);
+
 
             }
         }
@@ -429,11 +476,25 @@ public class MyMaze{
 
 
         MyMaze maze = makeMaze(3);
-        MyMaze mazeCopy = new MyMaze(maze);
+        MyMaze mazeCopy = new MyMaze(maze,1);
+        MyMaze mazeCopy2 = new MyMaze(maze,2);
+        MyMaze mazeCopy3 = new MyMaze(maze,3);
+
 
 
         maze.printMaze();
 
+        maze.dfs();
+
+        mazeCopy.printMaze();
+
+        mazeCopy2.printMaze();
+
+        mazeCopy3.printMaze();
+
+
+
+        /*
         System.out.println("Cheb:");
         long startTime = System.currentTimeMillis();
         maze.AstarSumEdge();
@@ -446,6 +507,7 @@ public class MyMaze{
         mazeCopy.AstarEuc();
         endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime));
+         */
 
 
 
