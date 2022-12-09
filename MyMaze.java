@@ -51,7 +51,6 @@ public class MyMaze{
 
         if(which == 1){
             this.maze = other.mazeCopy;
-
         }else if(which == 2){
             this.maze = other.mazeCopy1;
         }else if(which == 3){
@@ -66,7 +65,7 @@ public class MyMaze{
     }
 
     /* TODO: Create a new maze using the algorithm found in the writeup. */
-    public static MyMaze makeMaze(int level) {
+    public static MyMaze makeMaze(int n) {
 
         int totalRow;
         int totalCol;
@@ -74,24 +73,29 @@ public class MyMaze{
         int startRow;
         int endRow;
 
-        if (level == 1){// inputed option levels
-            totalRow = 5;
-            totalCol = 5;
+
+            totalRow = n;
+            totalCol = n;
             startRow = ranObj.nextInt(totalRow);
             endRow = ranObj.nextInt(totalRow);
-        }
-        else if(level == 2){
-            totalRow = 7;
-            totalCol = 7;
-            startRow = ranObj.nextInt(totalRow);
-            endRow = ranObj.nextInt(totalRow);
-        }
-        else{//level 3
-            totalRow = 50;
-            totalCol = 50;
-            startRow = ranObj.nextInt(totalRow);
-            endRow = ranObj.nextInt(totalRow);
-        }
+        // if (level == 1){// inputed option levels
+        //     totalRow = 5;
+        //     totalCol = 5;
+        //     startRow = ranObj.nextInt(totalRow);
+        //     endRow = ranObj.nextInt(totalRow);
+        // }
+        // else if(level == 2){
+        //     totalRow = 7;
+        //     totalCol = 7;
+        //     startRow = ranObj.nextInt(totalRow);
+        //     endRow = ranObj.nextInt(totalRow);
+        // }
+        // else{//level 3
+        //     totalRow = 100;
+        //     totalCol = 100;
+        //     startRow = ranObj.nextInt(totalRow);
+        //     endRow = ranObj.nextInt(totalRow);
+        // }
 
         MyMaze generated = new MyMaze(totalRow,totalCol,startRow,endRow);
         Stack1Gen<int[]> stack = new Stack1Gen<int[]>();
@@ -159,6 +163,12 @@ public class MyMaze{
 
                 generated.mazeCopy[row][col].setRight(false);
                 generated.mazeCopy[row][col+1].setVisited(true);
+
+                generated.mazeCopy1[row][col].setRight(false);
+                generated.mazeCopy1[row][col+1].setVisited(true);
+
+                generated.mazeCopy2[row][col].setRight(false);
+                generated.mazeCopy2[row][col+1].setVisited(true);
                 
             }
             else if (ranDirection == 1) {//if direction is bottom and cell to the bottom exists and isnt visited
@@ -474,8 +484,8 @@ public class MyMaze{
         //System.out.println("Enter a search strategy: Number: 1 BFS, 2 DFS, 3 A*");
         //int strat = s.nextInt();
 
-
-        MyMaze maze = makeMaze(3);
+        long t1,t2,t3,t4;
+        MyMaze maze = makeMaze(500);
         MyMaze mazeCopy = new MyMaze(maze,1);
         MyMaze mazeCopy2 = new MyMaze(maze,2);
         MyMaze mazeCopy3 = new MyMaze(maze,3);
@@ -494,22 +504,40 @@ public class MyMaze{
 
 
 
-        /*
+        
         System.out.println("Cheb:");
         long startTime = System.currentTimeMillis();
         maze.AstarSumEdge();
         long endTime = System.currentTimeMillis();
-        System.out.println("Total execution time: " + (endTime - startTime));
+        t1 = endTime - startTime;
+        System.out.println("Total execution time: " + (t1));
 
 
         System.out.println("Euc");
         startTime = System.currentTimeMillis();
         mazeCopy.AstarEuc();
         endTime = System.currentTimeMillis();
-        System.out.println("Total execution time: " + (endTime - startTime));
-         */
+        t2 = endTime - startTime;
+        System.out.println("Total execution time: " + (t2));
 
+        startTime = System.currentTimeMillis();
+        mazeCopy2.bfs();
+        endTime = System.currentTimeMillis();
+        t3 = endTime - startTime;
+        System.out.println("Total execution time: " + (t3));
 
+        startTime = System.currentTimeMillis();
+        mazeCopy3.dfs();
+        endTime = System.currentTimeMillis();
+        t4 = endTime - startTime;
+        System.out.println("Total execution time: " + (t4));
+        
+
+        System.out.println("Euc: " + t2 + "ms count: " + maze.counter);
+        System.out.println("Cheb: " + t1 + "ms count: " + mazeCopy.counter);
+        
+        System.out.println("bfs: " + t3 + "ms count: " + mazeCopy2.counter);
+        System.out.println("dfs: " + t4 + "ms count: " + mazeCopy3.counter);
 
         // if(strat == 1){
         //     maze.bfs();
