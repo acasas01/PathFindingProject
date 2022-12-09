@@ -12,6 +12,7 @@ public class MyMaze{
     int totalRow;
     int totalCol;
     double startEndDist;
+    Cell[][] mazeCopy;
 
 
     public MyMaze(int rows, int cols, int startRow, int endRow) {
@@ -20,10 +21,12 @@ public class MyMaze{
         totalRow = rows;
         totalCol = cols;
         maze = new Cell[rows][cols];
+        mazeCopy = new Cell[rows][cols];
 
         for (int i =0; i < maze.length; i++) {
             for (int j = 0; j < maze[0].length; j++) {
                 maze[i][j] = new Cell();
+                mazeCopy[i][j] = new Cell();
             }
         }
 
@@ -35,7 +38,12 @@ public class MyMaze{
 
     //copy constructor
     public MyMaze(MyMaze other){
-        this.maze = other.maze;
+        this.maze = other.mazeCopy;
+        this.startRow = other.startRow;
+        this.endRow = other.endRow;
+        this.totalCol = other.totalCol;
+        this.totalRow = other.totalRow;
+        this.startEndDist = other.startEndDist;
     }
 
     /* TODO: Create a new maze using the algorithm found in the writeup. */
@@ -60,8 +68,8 @@ public class MyMaze{
             endRow = ranObj.nextInt(totalRow);
         }
         else{//level 3
-            totalRow = 20;
-            totalCol = 20;
+            totalRow = 200;
+            totalCol = 200;
             startRow = ranObj.nextInt(totalRow);
             endRow = ranObj.nextInt(totalRow);
         }
@@ -72,6 +80,7 @@ public class MyMaze{
 
         stack.push(start);
         generated.maze[startRow][0].setVisited(true);
+        generated.mazeCopy[startRow][0].setVisited(true);
 
         int ranDirection;
 
@@ -81,6 +90,7 @@ public class MyMaze{
             int col = stack.top()[1];
             if (row == endRow && col == totalCol-1) { //end cell
                 generated.maze[row][col].setRight(false);
+                generated.mazeCopy[row][col].setRight(false);
             }
 
             int[] possible = new int[4];//possible directions
@@ -121,27 +131,43 @@ public class MyMaze{
                 stack.push(new int[]{row, col+1});
                 generated.maze[row][col].setRight(false);
                 generated.maze[row][col+1].setVisited(true);
+
+                generated.mazeCopy[row][col].setRight(false);
+                generated.mazeCopy[row][col+1].setVisited(true);
+                
             }
             else if (ranDirection == 1) {//if direction is bottom and cell to the bottom exists and isnt visited
                 stack.push(new int[]{row + 1, col});
                 generated.maze[row][col].setBottom(false);
                 generated.maze[row + 1][col].setVisited(true);
+
+                generated.mazeCopy[row][col].setBottom(false);
+                generated.mazeCopy[row + 1][col].setVisited(true);
             }
             else if (ranDirection == 2) {//if direction is up and cell above exists and isn't visited
                 stack.push(new int[]{row - 1, col});
                 generated.maze[row - 1][col].setBottom(false);
                 generated.maze[row - 1][col].setVisited(true);
+
+                generated.mazeCopy[row - 1][col].setBottom(false);
+                generated.mazeCopy[row - 1][col].setVisited(true);
             }
             else if (ranDirection == 3) {//going left
                 stack.push(new int[]{row, col-1});
                 generated.maze[row][col - 1].setRight(false);
                 generated.maze[row][col - 1].setVisited(true);
+
+                generated.mazeCopy[row][col - 1].setRight(false);
+                generated.mazeCopy[row][col - 1].setVisited(true);
             }
         }
 
         for(int i = 0; i< generated.maze.length; i++){ //setting all cells to false, thus maze will have only walls
             for(int j = 0; j < generated.maze[0].length; j++){
                 generated.maze[i][j].setVisited(false);
+
+                generated.mazeCopy[i][j].setVisited(false);
+
             }
         }
         
@@ -277,6 +303,7 @@ public class MyMaze{
         //queue.add(new int[]{startRow,0});
         // Stack1Gen<int[]> stack = new Stack1Gen<int[]>();
         // stack.push(new int[]{startRow,0});
+
         PriorityQueue<int[]> pq = new PriorityQueue<int[]>();
         pq.add(new int[]{startRow,0},1);
 
@@ -330,28 +357,36 @@ public class MyMaze{
     public static void main(String[] args){
         /* Use scanner to get user input for maze level, then make and solve maze /
                  */
-        System.out.println("Enter Level Number: 1 (5x5), 2 (5x20), or 3 (20x20) @");
-        Scanner s = new Scanner(System.in);
-        int lvl = s.nextInt();
-        MyMaze maze = makeMaze(lvl);
+
+        //System.out.println("Enter Level Number: 1 (5x5), 2 (5x20), or 3 (20x20) @");
+        //Scanner s = new Scanner(System.in);
+        //int lvl = s.nextInt();
+
+        //System.out.println("Enter a search strategy: Number: 1 BFS, 2 DFS, 3 A*");
+        //int strat = s.nextInt();
+
+
+        MyMaze maze = makeMaze(3);
         MyMaze mazeCopy = new MyMaze(maze);
 
-        System.out.println("Enter a search strategy: Number: 1 BFS, 2 DFS, 3 A*");
-        int strat = s.nextInt();
 
         maze.printMaze();
-        System.out.println("The Solved Maze is below");
 
-        System.out.println("DFS solved");
+        System.out.println("DFS:");
+        long startTime = System.currentTimeMillis();
         maze.dfs();
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total execution time: " + (endTime - startTime));
+
+
         System.out.println("Astar");
+        startTime = System.currentTimeMillis();
         mazeCopy.Astar();
-        if(maze == mazeCopy){
-            System.out.println("yas");
-        }
-        if(maze.equals(mazeCopy)){
-            System.out.println("yas22");
-        }
+        endTime = System.currentTimeMillis();
+        System.out.println("Total execution time: " + (endTime - startTime));
+
+
+
         // if(strat == 1){
         //     maze.bfs();
         // }else if(strat == 2){
