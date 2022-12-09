@@ -13,6 +13,7 @@ public class MyMaze{
     int totalCol;
     double startEndDist;
     Cell[][] mazeCopy;
+    int counter = 0; 
 
 
     public MyMaze(int rows, int cols, int startRow, int endRow) {
@@ -179,6 +180,7 @@ public class MyMaze{
     /* TODO: Print a representation of the maze to the terminal */
     public void printMaze() {
         String wall = "";
+        counter = 0;
         wall += "   ";
         for (int a = 0; a < maze[0].length; a++) { //top walls
             wall += "---   ";
@@ -195,6 +197,7 @@ public class MyMaze{
             for (int j = 0; j < maze[0].length; j++) {
                 if (maze[i][j].getVisited() == true) {//checks to see if the cell has been visited if true then places star
                     wall += " * ";
+                    counter++;
 
                 } else {
                     wall += "   ";//if not visited open space is printed.
